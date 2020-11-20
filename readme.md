@@ -425,11 +425,11 @@ const metaapi = new MetaApi(token);
 const copyFactory = new CopyFactory(token);
 
 // retrieve MetaApi MetaTrader accounts with CopyFactory as application field value
-const masterMetaapiAccount = await api.metatraderAccountApi.getAccount('masterMetaapiAccountId');
+const masterMetaapiAccount = await metaapi.metatraderAccountApi.getAccount('masterMetaapiAccountId');
 if (masterMetaapiAccount.application !== 'CopyFactory') {
   throw new Error('Please specify CopyFactory application field value in your MetaApi account in order to use it in CopyFactory API');
 }
-const slaveMetaapiAccount = await api.metatraderAccountApi.getAccount('slaveMetaapiAccountId');
+const slaveMetaapiAccount = await metaapi.metatraderAccountApi.getAccount('slaveMetaapiAccountId');
 if (slaveMetaapiAccount.application !== 'CopyFactory') {
   throw new Error('Please specify CopyFactory application field value in your MetaApi account in order to use it in CopyFactory API');
 }
@@ -439,10 +439,16 @@ let configurationApi = copyFactory.configurationApi;
 let masterAccountId = configurationApi.generateAccountId();
 let slaveAccountId = configurationApi.generateAccountId();
 await configurationApi.updateAccount(masterAccountId, {
-  name: 'Demo account',
+  name: 'Demo master account',
   connectionId: masterMetaapiAccount.id,
   subscriptions: []
 });
+await configurationApi.updateAccount(slaveAccountId, {
+  name: 'Demo slave account',
+  connectionId: slaveMetaapiAccount.id,
+  subscriptions: []
+});
+
 
 // create a strategy being copied
 let strategyId = await configurationApi.generateStrategyId();
